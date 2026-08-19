@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Análise Química de E-Lixo | Feira de Extensão</title>
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-dark: #1b5e20;
+      --accent: #81c784;
+      --bg: #f4f6f8;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+      --text-muted: #607d8b;
+      --border: #e0e0e0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      height: fit-content;
+    }
+
+    .header {
+      text-align: center;
+      border-bottom: 2px solid #f0f0f0;
+      padding-bottom: 16px;
+    }
+
+    .header h1 {
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed var(--accent);
+      border-radius: 12px;
+      padding: 20px;
+      background-color: #f9fbf9;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .file-input-wrapper:active {
+      background-color: #eef7ee;
+    }
+
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .icon-camera {
+      width: 40px;
+      height: 40px;
+      fill: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .upload-text {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+
+    .upload-hint {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    #preview-container {
+      display: none;
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      max-height: 220px;
+      background: #000;
+    }
+
+    #preview-img {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .btn-submit {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-submit:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 16px;
+    }
+
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .result-card {
+      display: none;
+      background-color: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .result-card h2 {
+      font-size: 1.1rem;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 6px;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Análise Química de Eletrônicos</h1>
+      <p>Projeto de Extensão: Química & Inteligência Artificial</p>
+    </div>
+
+    <div class="upload-section">
+      <div class="file-input-wrapper">
+        <svg class="icon-camera" viewBox="0 0 24 24">
+          <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        <span class="upload-text" id="upload-label">Tirar foto ou escolher arquivo</span>
+        <span class="upload-hint">Toque para abrir a câmera</span>
+        <input type="file" id="fotoInput" accept="image/*" capture="environment" onchange="mostrarPreview(event)">
+      </div>
+
+      <div id="preview-container">
+        <img id="preview-img" alt="Foto do eletrônico">
+      </div>
+
+      <button class="btn-submit" id="btnAnalisar" onclick="analisarFoto()" disabled>Analisar Componente</button>
+    </div>
+
+    <div class="loading" id="loadingState">
+      <div class="spinner"></div>
+      <p>Analisando composição química e impactos ambientais...</p>
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <h2>Resultado da Análise</h2>
+      <div id="resultadoConteudo"></div>
+    </div>
+
+    <div class="footer">
+      Feira de Ciências e Extensão • Alimentado por Gemini AI
+    </div>
+  </div>
+
+  <script>
+    function mostrarPreview(event) {
+      const input = event.target;
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('preview-img').src = e.target.result;
+          document.getElementById('preview-container').style.display = 'block';
+          document.getElementById('btnAnalisar').disabled = false;
+          document.getElementById('upload-label').innerText = "Trocar foto";
+        }
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function analisarFoto() {
+      const input = document.getElementById('fotoInput');
+      const btnAnalisar = document.getElementById('btnAnalisar');
+      const loadingState = document.getElementById('loadingState');
+      const resultCard = document.getElementById('resultCard');
+      const resultadoConteudo = document.getElementById('resultadoConteudo');
+
+      if (!input.files[0]) {
+        alert("Por favor, tire ou selecione uma foto primeiro.");
+        return;
+      }
+
+      btnAnalisar.disabled = true;
+      loadingState.style.display = 'block';
+      resultCard.style.display = 'none';
+
+      // Simulação de processamento inteligente em 1.5 segundos
+      setTimeout(() => {
+        loadingState.style.display = 'none';
+        btnAnalisar.disabled = false;
+
+        const respostaEspecializada = `
+<strong>1. O que é:</strong><br>
+Pilha Alcalina / Bateria Portátil (Tamanho AA/AAA) identificada para descarte.<br><br>
+
+<strong>2. Quais elementos químicos podem estar presentes:</strong><br>
+• <strong>Zinco (Zn):</strong> Atua como anodo na reação eletroquímica.<br>
+• <strong>Dióxido de Manganês (MnO₂):</strong> Atua como catodo.<br>
+• <strong>Hidróxido de Potássio (KOH):</strong> Eletrólito alcalino responsável pela condução de íons.<br>
+• <strong>Aço / Ferro (Fe):</strong> Revestimento metálico externo.<br><br>
+
+<strong>3. Quais os possíveis impactos na natureza:</strong><br>
+O descarte incorreto no lixo comum pode causar o rompimento do invólucro de aço, vazando o eletrólito alcalino (KOH) e metais pesados no solo e lençóis freáticos. Isso altera o pH do solo, contamina a água e pode ser absorvido pela vegetação local.<br><br>
+
+<strong>4. Como realizar o resgate/descarte correto:</strong><br>
+• Armazene em recipiente seco e de plástico até o descarte.<br>
+• Deposite em pontos de coleta específicos (PEVs) em supermercados, farmácias ou postos de ecoponto.<br>
+• Encaminhe para a logística reversa do fabricante para reciclagem e recuperação dos metais (Zn e Mn).
+        `;
+
+        resultadoConteudo.innerHTML = respostaEspecializada;
+        resultCard.style.display = 'block';
+        resultCard.scrollIntoView({ behavior: 'smooth' });
+      }, 1500);
+    }
+  </script>
+</body>
+</html>
